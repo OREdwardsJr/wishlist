@@ -1,7 +1,7 @@
 // Variable Declaration
 
 /* DELETE THIS */ KEY = "CAlVNchmiB7bFLzxzpZ97ZXKwHKn1_ijwniyRSHKJxE";
-var posts = 1;
+var posts = localStorage.length + 1;
 
 var image;
 var title;
@@ -14,6 +14,8 @@ const submitEntryBtn = document.querySelector("#btn-submit");
 const accessKey = KEY;
 
 // Event Listeners
+onload = () => { loadLocalStorage() };
+
 submitEntryBtn.addEventListener('click', () => {
     title = document.querySelector("#destination").value;
     document.querySelector("#destination").value = "";
@@ -34,6 +36,14 @@ submitEntryBtn.addEventListener('click', () => {
 })
 
 // Business Functions
+function loadLocalStorage() {
+    for (var i = 0; i < localStorage.length; i++) {
+        var cached_post = localStorage.getItem(localStorage.key(i));
+
+        insertNewPost(cached_post.split(','));
+    }
+}
+
 function storePost(title, dest_location, description) {
     localStorage.setItem(posts, [title, dest_location, description]);
 
@@ -42,10 +52,11 @@ function storePost(title, dest_location, description) {
     posts += 1;
 }
 
-function insertNewPost(post) {
+function insertNewPost(post, cached=false) {
     // .containers
     const containersDiv = createDiv();
     containersDiv.classList.add("containers");
+    containersDiv.id = "container-" + (posts - 1);
 
     // .image-section
     const imageSectionDiv = createDiv();
@@ -95,27 +106,16 @@ function insertNewPost(post) {
     editBtn.addEventListener('click', (e) => editContents(e.target))
     removeBtn.addEventListener('click', (e) => removeEntry(e.target))
 
-    loadImg(imageSectionDiv, title, true); // MOVE THIS BACK TO LINE 55 IF BUGS ARE INTRODUCED
+    loadImg(imageSectionDiv, title, true, cached);
 }
 
-function editContents(obj) {
-    const obj_container = obj.parentNode.parentNode.parentNode; 
-    const image_section = obj_container.children[0]; // .containers.image-section
-    const image_info = obj_container.children[1];    // . containers.image-info
-
-    const destination = prompt("Enter name of attraction");
-    const dest_location = prompt("Enter location of attraction"); 
-    const description = prompt("Enter description");
-
-    if (destination) image_info.children[0].textContent = destination;
-    if (dest_location) image_info.children[1].textContent = dest_location; 
-    if (description) image_info.children[2].textContent = description;
-
-    loadImg(image_section.firstChild, destination, false); //TODO: IMAGES AREN'T UPDATING
-}
-
-function loadImg(obj, search, first_entry) {
+function loadImg(obj, search, first_entry, cached=false) {
     const url = `https://api.unsplash.com/search/photos?query=${search}&per_page=30&page=1&client_id=${KEY}`;
+
+    if (cached) {
+        obj.src = cached;
+        return
+    }
 
     fetch(url)
         .then(response => {
@@ -135,19 +135,39 @@ function loadImg(obj, search, first_entry) {
                     else {
                         obj.src = img_result;
                     }
-                    var new_entry = localStorage.getItem(posts - 1) + img_result;
+                    var new_entry = localStorage.getItem(posts - 1) + obj.src;
                     localStorage.setItem(posts - 1, new_entry)
-                    console.log(localStorage.getItem(posts - 1));
                 }
             }
         })
 }
 
-// Helper functions
-function removeEntry(obj) {
-    obj.parentNode.parentNode.parentNode.remove();
+function editContents(obj) {
+    const obj_container = obj.parentNode.parentNode.parentNode; 
+    const image_section = obj_container.children[0]; // .containers.image-section
+    const image_info = obj_container.children[1];    // . containers.image-info
+
+    const destination = prompt("Enter name of attraction");
+    const dest_location = prompt("Enter location of attraction"); 
+    const description = prompt("Enter description");
+
+    if (destination) image_info.children[0].textContent = destination;
+    if (dest_location) image_info.children[1].textContent = dest_location; 
+    if (description) image_info.children[2].textContent = description;
+
+    loadImg(image_section.firstChild, destination);
 }
 
+function removeEntry(obj) {
+    parent_node = obj.parentNode.parentNode.parentNode;
+    parent_node.remove(); // parent container of post
+    
+    console.log(parent_node.id.split('-')[1]);
+    localStorage.removeItem(parent_node.id.split('-')[1]);
+    console.log(localStorage);
+}
+
+// Helper Functions
 function createDiv() {
     return document.createElement("div");
 }

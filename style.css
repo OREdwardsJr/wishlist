@@ -1,0 +1,102 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden;
+}
+
+#landing-content {
+    display: grid;
+    grid-template-rows: 15%;
+    height: 99vh;
+    width: 100vw;
+}
+
+#landing-content #title-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+#landing-content #title-section #title-text-body {
+    display: flex;
+    height: 65%;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#landing-content #title-section {
+    background-color: #e3e3e3;
+}
+
+#landing-content #main-section {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    margin-top: 4vh;
+}
+
+#landing-content #main-section #form-body {
+    justify-content: center;
+    display: flex;
+}
+
+#landing-content #main-section #form-body #content input {
+    margin-bottom: 2vh;
+}
+
+#landing-content #main-section #display-main-content {
+    display: grid;
+    grid-template-rows: 5% 95%;
+}
+
+#landing-content #main-section #display-main-content #title {
+    display: grid;
+    justify-items: center;
+}
+
+#landing-content #main-section #display-main-content #posts-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3vw;
+}
+
+#landing-content #main-section #display-main-content #posts-content .containers {
+    display: grid;
+    grid-template-rows: 43%;
+    height: 46vh;
+    width: 15vw;
+    border: 1px solid #a8a6a65c;
+    border-radius: 6px;
+    box-shadow: 3px 0px 20px -5px #e8e3e3;
+}
+
+#landing-content #main-section #display-main-content #posts-content .containers .image-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 14px;
+    width: 95%;
+}
+
+#landing-content #main-section #display-main-content #posts-content .containers .image-section img {
+    object-fit: fill;
+    width: 100%;
+    height: 97%;
+}
+
+#landing-content #main-section #display-main-content #posts-content .containers .image-info .img-btns {
+    display: flex;
+    gap: 1vw;
+}
+
+#landing-content #main-section #display-main-content #posts-content .containers .image-info .img-btns button {
+    width: auto;
+    /* height: 4vh; */
+    font-size: larger;
+    padding: 1vw;
+    display: flex;
+    align-items: center;
+}

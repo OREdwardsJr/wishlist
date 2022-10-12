@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        <div id="landing-content">
+            <div id="title-section">
+                <div id="title-text-body">
+                    <h1 id="title">
+                        Vacation Destinations WishList
+                    </h1>
+                    <h5 id="title-tag">
+                        Found exciting places to visit on your next vacation? Use the form below to add them to your wishlist.
+                    </h5>
+                </div>
+            </div>
+
+            <div id="main-section">
+                <div id="form-body">
+                    <div id="content">
+                        <form name = "new-post"
+                        id="new-post"
+                        method="post"
+                        action="#"
+                        onclick="return false;"
+                        style="display: grid">
+                            <label for="destination">Destination name:</label><br>
+                            <input type="text" id="destination" name="destination" required><br>
+                            
+                            <label for="location">Location:</label><br>
+                            <input type="text" id="location" name="location" required><br>
+
+                            <label for="photo">Photo:</label><br>
+                            <input type="url" id="photo" name="photo"><br>
+
+                            <label for="description">Description:</label><br>
+                            <input type="text" id="description" name="description"><br>
+
+                            <button type="submit" id="btn-submit" onclick="return false">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="display-main-content">
+                    <div id="title">
+                        <h2 style="width: 20vw;">My WishList</h2>
+                    </div>
+                    <div id="posts-content">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="main.js" async defer></script>
+    </body>
+    <footer>
+   
+</html>

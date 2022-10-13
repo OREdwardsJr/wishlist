@@ -113,26 +113,6 @@ function loadImg(obj, search, new_post) {
             }
             localStorage.setItem(latest_post_id, latest_post);
         })
-
-    /* 
-    //FETCH API
-    fetch(url)
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            let img_result = data.urls.thumb;
-            if (new_post) {
-                let image_element = document.createElement('img');
-                image_element.src = img_result;
-                obj.appendChild(image_element);
-            }
-            else { // if user is editing post and calling for new photo
-                obj.src = img_result;
-            }
-            localStorage.setItem(latest_post_id, latest_post);
-        })
-    */
 }
 
 async function unsplashAPICall(url) {

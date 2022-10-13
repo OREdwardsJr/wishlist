@@ -1,8 +1,4 @@
-// Variable Declaration
-
-/* DELETE THIS */ KEY = "CAlVNchmiB7bFLzxzpZ97ZXKwHKn1_ijwniyRSHKJxE";
-
-const accessKey = KEY;
+import { KEY } from './utils.js';
 
 // Starter Function
 displayCachedPosts();
@@ -100,41 +96,49 @@ function displayPost(post_string, cached) { // cached is tracking whether
     loadImg(imageSectionDiv, post[0], true, cached);
 }
 
-function loadImg(obj, search, new_post, cached=false) {
-    // if (cached) {
-    //     obj.src = obj.src;
-    //     console.log(obj);
-    //     return;
-    // }
-
-    const url = `https://api.unsplash.com/search/photos?query=${search}&per_page=50&page=1&client_id=${KEY}`;
-    const latest_post_id = String(parseInt(localStorage.getItem('entries'))); //
+function loadImg(obj, search, new_post) {
+    const url = `https://api.unsplash.com/photos/random?query=${search}&per_page=50&page=1&client_id=${KEY}`;
+    const latest_post_id = localStorage.getItem('entries'); 
     const latest_post = localStorage.getItem(latest_post_id);
 
+    unsplashAPICall(url).then(data => {
+        let img_result = data.urls.thumb;
+            if (new_post) {
+                let image_element = document.createElement('img');
+                image_element.src = img_result;
+                obj.appendChild(image_element);
+            }
+            else { // if user is editing post and calling for new photo
+                obj.src = img_result;
+            }
+            localStorage.setItem(latest_post_id, latest_post);
+        })
+
+    /* 
+    //FETCH API
     fetch(url)
         .then(response => {
             return response.json();
         })
         .then(data => {
-            const randomNum = Math.floor(Math.random() * data.results.length - 1);
-            
-            for (let i = 0; i < data.results.length; i++) {
-                if (i == randomNum) {
-                    let img_result = data.results[i].urls.thumb;
-                    if (new_post) {
-                        let image_element = document.createElement('img');
-                        image_element.src = img_result;
-                        obj.appendChild(image_element);
-                    }
-                    else { // if user is editing post and calling for new photo
-                        obj.src = img_result;
-                    }
-                    //var new_entry = latest_post + "," + String(obj.src);
-                    //localStorage.setItem(latest_post_id, new_entry);
-                    localStorage.setItem(latest_post_id, latest_post);
-                }
+            let img_result = data.urls.thumb;
+            if (new_post) {
+                let image_element = document.createElement('img');
+                image_element.src = img_result;
+                obj.appendChild(image_element);
             }
+            else { // if user is editing post and calling for new photo
+                obj.src = img_result;
+            }
+            localStorage.setItem(latest_post_id, latest_post);
         })
+    */
+}
+
+async function unsplashAPICall(url) {
+    const request = await fetch(url);
+    const data = await request.json();
+    return data;
 }
 
 function editContents(obj) {

@@ -1,4 +1,4 @@
-import { KEY } from './utils.js';
+const KEY = "wtq3TnpbUIM1zklxhd2X6mpOZViWnD-5FrORsZgivWQ";
 
 // Starter Function
 displayCachedPosts();
@@ -10,44 +10,52 @@ document.querySelector("#btn-submit").addEventListener('click', () => {
     const dest_location = document.querySelector("#location").value;
     const description = document.querySelector("#description").value;
 
-    document.querySelector("#destination").value = "";
-    document.querySelector("#location").value = "";
-    document.querySelector("#description").value = "";
-
     // validation
     if (title == "" || dest_location == "") {
         alert("Please complete all required fields.")
     }
     else {
-        add_post(title, dest_location, description, post_id)
+        document.querySelector("#destination").value = "";
+        document.querySelector("#location").value = "";
+        document.querySelector("#description").value = "";
+
+        add_post(post_id, title, dest_location, description)
     }
 })
 
 // Business Functions
-function add_post(title, dest_location, description, post_id) {
-    storePost(title, dest_location, description, post_id);
+function add_post(post_id, title, dest_location, description ) {
+    storePost(post_id, title, dest_location, description);
     displayPost(localStorage.getItem(post_id));
 
-    localStorage.setItem('entries', parseInt(post_id) + 1);
+    let entry = parseInt(post_id) + 1;
+    localStorage.setItem('entries', entry); // Increase entries id by 1
 }
 
-function storePost(title, dest_location, description, post_id) {
-    localStorage.setItem(post_id, [title, dest_location, description, post_id]);
+function storePost(post_id, title, dest_location, description) {
+    const new_entry = JSON.stringify({
+        'title': title,
+        'dest_location': dest_location,
+        'description': description,
+        'post_id': post_id
+    });
+
+    localStorage.setItem(post_id, new_entry);
 }
 
-function displayLocalStorage(cached=true) { 
-    for (var i = 0; i < parseInt(localStorage.entries); i++) {
+function displayLocalStorage() { 
+    for (var i = 0; i < localStorage.getItem('entries'); i++) {
         if (localStorage.getItem(i) === null) continue;
 
         var cached_post = localStorage.getItem(i);
         
-        displayPost(cached_post, cached); // JSON.parse() can be used here instead
+        displayPost(cached_post); 
     }
 }
 
-function displayPost(post_string, cached) { // cached is tracking whether 
+function displayPost(postObj) { // cached is tracking whether 
     // declare variables
-    const post = post_string.split(',');
+    const post = JSON.parse(postObj);
     const postsDiv = document.querySelector("#posts-content");
     const containersDiv = createDiv();
     const imageSectionDiv = createDiv();
@@ -68,14 +76,14 @@ function displayPost(post_string, cached) { // cached is tracking whether
     removeBtn.classList.add("btn-remove");
             
     // change textContent
-    titleDiv.textContent = post[0];
-    locationDiv.textContent = post[1];
-    contentPara.textContent = post[2];
+    titleDiv.textContent = post.title;
+    locationDiv.textContent = post.dest_location;
+    contentPara.textContent = post.description;
     editBtn.textContent = "Edit";
     removeBtn.textContent = "Remove";
 
     // add id
-    containersDiv.id = "container-" + post[3];
+    containersDiv.id = "container-" + post.post_id;
 
     // appendChild
     buttonsDiv.appendChild(editBtn);
@@ -93,13 +101,12 @@ function displayPost(post_string, cached) { // cached is tracking whether
     removeBtn.addEventListener('click', (e) => removeEntry(e.target))
 
     // function calls
-    loadImg(imageSectionDiv, post[0], true, cached);
+    loadImg(imageSectionDiv, post.title, true);
 }
 
 function loadImg(obj, search, new_post) {
-    const url = `https://api.unsplash.com/photos/random?query=${search}&per_page=50&page=1&client_id=${KEY}`;
-    const latest_post_id = localStorage.getItem('entries'); 
-    const latest_post = localStorage.getItem(latest_post_id);
+    // const url = `https://api.unsplash.com/photos/random?query=${search}&per_page=50&page=1&client_id=${KEY}`;
+    const url = "";
 
     unsplashAPICall(url).then(data => {
         let img_result = data.urls.thumb;
@@ -108,10 +115,9 @@ function loadImg(obj, search, new_post) {
                 image_element.src = img_result;
                 obj.appendChild(image_element);
             }
-            else { // if user is editing post and calling for new photo
+            else { // if user is editing post - doesn't need new img element
                 obj.src = img_result;
             }
-            localStorage.setItem(latest_post_id, latest_post);
         })
 }
 
@@ -130,26 +136,27 @@ function editContents(obj) {
     const dest_location = prompt("Enter location of attraction"); 
     const description = prompt("Enter description");
 
-    // conditionals
-    if (destination) {
-        image_info.children[0].textContent = destination
-        loadImg(image_section.firstChild, destination, false);
-    }
-    if (dest_location) image_info.children[1].textContent = dest_location; 
-    if (description) image_info.children[2].textContent = description;
+    
+    image_info.children[0].textContent = destination
+    image_info.children[1].textContent = dest_location; 
+    image_info.children[2].textContent = description;
 
+    loadImg(image_section.firstChild, destination, false);
+    storePost(obj_container.id.split('-')[1], destination, dest_location, description);
 }
 
 function removeEntry(obj) {
-    parent_node = obj.parentNode.parentNode.parentNode;
+    const parent_node = obj.parentNode.parentNode.parentNode;
     parent_node.remove(); // parent container of post
     
     localStorage.removeItem(parent_node.id.split('-')[1]);
+    let new_num = parseInt(localStorage.getItem('entries')) - 1;
+    localStorage.setItem('entries',  new_num);
 }
 
 // Helper Functions
 function displayCachedPosts() {
-    if (localStorage.length === 0) { localStorage.setItem("entries", '0') }
+    if (localStorage.length === 0) { localStorage.setItem("entries", "0") }
     else onload = () => { displayLocalStorage() }
 }
 
